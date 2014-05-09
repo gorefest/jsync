@@ -1,12 +1,15 @@
 package net.mantucon.jsync.jsync;
+import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.Extension;
+import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.util.FormValidation;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.AbstractProject;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
+import jenkins.model.Jenkins;
 import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.Jsync;
 import net.sf.json.JSONObject;
@@ -64,14 +67,24 @@ public class HelloWorldBuilder extends Builder {
 
         Configuration.logger = new JenkinsLogger(listener);
 
-        Configuration.logger.info("Begin work");
-        Configuration.logger.info("Build output directory  : "+getBuildDirectory());
-        Configuration.logger.info("Local mirror directory  : "+getLocalMirror());
-        Configuration.logger.info("Remote deploy directory : "+getRemoteDirectory());
-        Jsync jsync = new Jsync();
-        Configuration.init(getBuildDirectory(), getLocalMirror(), getRemoteDirectory());
-        Configuration.debugEnabled = getDescriptor().isEnabled();
-        jsync.process();
+        try {
+            EnvVars vars = build.getEnvironment(listener);
+
+            String buildDirectory  = vars.expand(this.getBuildDirectory());
+            String localMirror = vars.expand(getLocalMirror());
+            String remoteDirectory = vars.expand(getRemoteDirectory());
+
+            Configuration.logger.info("Begin work");
+            Configuration.logger.info("Build output directory  : "+buildDirectory);
+            Configuration.logger.info("Local mirror directory  : "+localMirror);
+            Configuration.logger.info("Remote deploy directory : "+remoteDirectory);
+            Jsync jsync = new Jsync();
+            Configuration.init(buildDirectory, localMirror, remoteDirectory);
+            Configuration.debugEnabled = getDescriptor().isEnabled();
+            jsync.process();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return true;
     }

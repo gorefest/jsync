@@ -70,7 +70,7 @@ public class MountPointFileHandler implements Handler {
         File buildDirFile =  local2build(localFile);
         File remoteFile = local2remote(localFile);
 
-        while (!buildDirFile.exists()) {
+        while (!buildDirFile.exists() && localFile.getAbsolutePath().startsWith(Configuration.getLocalInstallDir().getAbsolutePath())) {
             result.addAction(localFile.isDirectory() ? new RmDirAction(localFile) : new DeleteFileAction(localFile));
             result.addAction(remoteFile.isDirectory() ? new RmDirAction(remoteFile) : new DeleteFileAction(remoteFile));
 
