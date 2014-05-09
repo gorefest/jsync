@@ -1,6 +1,8 @@
 package net.mantucon.jsync.actions.steps;
 
+import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.actions.*;
+import net.mantucon.jsync.util.JSyncLogger;
 
 import java.io.*;
 
@@ -23,7 +25,10 @@ public class CopyFileStep implements Step {
     }
 
     private void performCopy() {
-        System.err.println("COPY "+sourceFile.getAbsolutePath());
+        JSyncLogger logger = Configuration.getLogger();
+        if (logger.isDebugEnabled()) {
+            logger.info(Thread.currentThread().getName() + ": COPY "+sourceFile.getAbsolutePath());
+        }
 
         try {
             FileInputStream inputStream = new FileInputStream(sourceFile);

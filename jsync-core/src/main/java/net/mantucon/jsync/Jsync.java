@@ -1,6 +1,7 @@
 package net.mantucon.jsync;
 
 import net.mantucon.jsync.transaction.SynchronizationTransaction;
+import net.mantucon.jsync.util.JSyncLogger;
 
 import java.io.File;
 import java.util.concurrent.ForkJoinPool;
@@ -14,20 +15,24 @@ public class Jsync
     private static final ForkJoinPool crawlerPool = new ForkJoinPool(8);
 
     public static void main( String[] args ) throws InterruptedException {
+        JSyncLogger logger = Configuration.getLogger();
 
         if (args == null || args.length != 3) {
-            System.err.println("Usage : <srcDir> <localMirrorDir> <remoteDir>");
+
+            logger.error("Usage : <srcDir> <localMirrorDir> <remoteDir>");
             System.exit(-1);
         }
 
-        System.err.println("starting");
+        logger.info("starting");
         Configuration.init(args[0],args[1],args[2]);
 
         new Jsync().process();
 
+        logger.info("done");
+
     }
 
-    void process() {
+    public void process() {
         SynchronizationTransaction tx = new SynchronizationTransaction();
 
         // 1. Find deletion candidates

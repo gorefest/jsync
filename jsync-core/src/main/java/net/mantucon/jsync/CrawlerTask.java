@@ -4,6 +4,7 @@ import net.mantucon.jsync.actions.Action;
 import net.mantucon.jsync.actions.ActionChain;
 import net.mantucon.jsync.handler.Handler;
 import net.mantucon.jsync.handler.HandlerFactory;
+import net.mantucon.jsync.util.JSyncLogger;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -60,7 +61,11 @@ public class CrawlerTask extends RecursiveTask<Action> {
 
     @Override
     protected Action compute() {
-        System.err.println(Thread.currentThread().getName() + " : entering " + folder.getName());
+        JSyncLogger logger = Configuration.getLogger();
+
+        if (logger.isDebugEnabled()) {
+            logger.info(Thread.currentThread().getName() + " : entering " + folder.getName());
+        }
         ActionChain result = new ActionChain();
 
 
@@ -72,15 +77,18 @@ public class CrawlerTask extends RecursiveTask<Action> {
         List<RecursiveTask<Action>> taskList = new LinkedList<>();
         for (File subFile : handler.listSubfiles(folder)) {
             if (subFile.isDirectory()) {
-                System.out.println(Thread.currentThread().getName() + " : Dir "+subFile.getName());
+                if (logger.isDebugEnabled()) {
+                    logger.info(Thread.currentThread().getName() + " : Dir "+subFile.getName());
+                }
                 // 2. SPAWN
                 CrawlerTask task = new CrawlerTask(subFile, mode);
                 taskList.add(task);
                 task.fork();
             } else {
                 // 3. FILE
-                System.out.println(Thread.currentThread().getName() + " : Processing " + subFile.getName());
-
+                if (logger.isDebugEnabled()) {
+                    logger.info(Thread.currentThread().getName() + " : Processing " + subFile.getName());
+                }
                 switch (mode){
 
                     case BUILD_DIR:

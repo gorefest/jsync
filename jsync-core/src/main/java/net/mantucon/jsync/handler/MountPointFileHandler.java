@@ -3,6 +3,7 @@ package net.mantucon.jsync.handler;
 import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.actions.*;
 import net.mantucon.jsync.util.FileUtil;
+import net.mantucon.jsync.util.JSyncLogger;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -50,7 +51,10 @@ public class MountPointFileHandler implements Handler {
 
                 result = combinedAction;
             } else {
-                System.out.println(Thread.currentThread().getName() + " : SKIP MD5");
+                final JSyncLogger logger = Configuration.getLogger();
+                if (logger.isDebugEnabled()) {
+                    logger.info(Thread.currentThread().getName() + " : SKIP MD5");
+                }
                 result = new SkipAction(targetFile);
             }
         }

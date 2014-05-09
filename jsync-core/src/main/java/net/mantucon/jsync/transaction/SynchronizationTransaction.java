@@ -1,7 +1,9 @@
 package net.mantucon.jsync.transaction;
 
+import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.actions.Action;
 import net.mantucon.jsync.actions.ActionChain;
+import net.mantucon.jsync.util.JSyncLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,10 @@ public class SynchronizationTransaction {
 
     public void commit() {
         ExecutorService executorService = Executors.newFixedThreadPool(4);
+        JSyncLogger logger = Configuration.getLogger();
+        logger.info("starting Phase 1 :");
+        int i = 0;
+
         for (Action action : cleanupActions) {
             if (action instanceof ActionChain) {
                 executorService.submit((Runnable) action);
@@ -45,6 +51,7 @@ public class SynchronizationTransaction {
             throw new RuntimeException(e);
         }
 
+        logger.info("...done. starting Phase 2 :");
         executorService = Executors.newFixedThreadPool(4);
         for (Action action : actions) {
             if (action instanceof ActionChain) {
@@ -59,6 +66,8 @@ public class SynchronizationTransaction {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        logger.info("done.");
 
     }
 

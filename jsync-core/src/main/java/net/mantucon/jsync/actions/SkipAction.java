@@ -1,5 +1,8 @@
 package net.mantucon.jsync.actions;
 
+import net.mantucon.jsync.Configuration;
+import net.mantucon.jsync.util.JSyncLogger;
+
 import java.io.File;
 
 /**
@@ -25,6 +28,9 @@ public class SkipAction implements Action {
 
     @Override
     public void perform() {
-        System.out.println("Skipped file "+skipFile);
+        JSyncLogger logger = Configuration.getLogger();
+        if (logger.isDebugEnabled()) {
+            logger.info(Thread.currentThread().getName()+" : Skipped file "+skipFile);
+        }
     }
 }

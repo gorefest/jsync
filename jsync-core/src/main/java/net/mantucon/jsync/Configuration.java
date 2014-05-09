@@ -1,6 +1,8 @@
 package net.mantucon.jsync;
 
 import net.mantucon.jsync.transaction.SynchronizationTransaction;
+import net.mantucon.jsync.util.JSyncLogger;
+import net.mantucon.jsync.util.JSyncStandardLogger;
 
 /**
  * Created by marcus on 14.04.14.
@@ -12,6 +14,8 @@ public class Configuration {
     private static String _remoteSyncDir;
     private static SynchronizationTransaction synchronizationTransaction;
     private static String _handlerClassName = "net.mantucon.jsync.handler.MountPointFileHandler";
+    public static boolean debugEnabled=false;
+    public static JSyncLogger logger = new JSyncStandardLogger();
 
     public static void init(String localBuildDir, String localInstallDir, String remoteSyncDir) {
         _localBuildDir = localBuildDir;
@@ -37,5 +41,13 @@ public class Configuration {
 
     public static String getHandlerClassName() {
         return _handlerClassName;
+    }
+
+    public static boolean isDebugEnabled() {
+        return debugEnabled;
+    }
+    
+    public static JSyncLogger getLogger() {
+        return logger;
     }
 }

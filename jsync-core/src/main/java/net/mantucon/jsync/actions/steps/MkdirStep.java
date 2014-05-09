@@ -1,8 +1,10 @@
 package net.mantucon.jsync.actions.steps;
 
+import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.actions.Action;
 import net.mantucon.jsync.actions.RmDirAction;
 import net.mantucon.jsync.actions.Step;
+import net.mantucon.jsync.util.JSyncLogger;
 
 import java.io.File;
 
@@ -19,7 +21,10 @@ public class MkdirStep implements Step {
 
     @Override
     public void perform() {
-        System.err.println("MKDIR "+targetDir.getAbsolutePath());
+        JSyncLogger logger = Configuration.getLogger();
+        if (logger.isDebugEnabled()) {
+            logger.info(Thread.currentThread().getName()+" : MKDIR "+targetDir.getAbsolutePath());
+        }
         targetDir.mkdir();
     }
 
