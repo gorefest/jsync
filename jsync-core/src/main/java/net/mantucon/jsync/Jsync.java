@@ -36,10 +36,10 @@ public class Jsync
         SynchronizationTransaction tx = new SynchronizationTransaction();
 
         // 1. Find deletion candidates
-        tx.addCleanupAction(crawlerPool.invoke(new CrawlerTask(new File(Configuration.getLocalInstallDir()), CrawlerTask.Mode.LOCAL_MIRROR)));
+        tx.addCleanupAction(crawlerPool.invoke(new CrawlerTask(Configuration.getLocalInstallDir(), CrawlerTask.Mode.LOCAL_MIRROR)));
 
         // 2. Find override candidates
-        tx.addAction(crawlerPool.invoke(new CrawlerTask(new File(Configuration.getLocalBuildDir()), CrawlerTask.Mode.BUILD_DIR)));
+        tx.addAction(crawlerPool.invoke(new CrawlerTask(Configuration.getLocalBuildDir(), CrawlerTask.Mode.BUILD_DIR)));
 
 
         try {

@@ -78,8 +78,8 @@ public class MountPointFileHandler implements Handler {
             buildDirFile =  local2build(local2build(localFile));
             remoteFile = local2remote(local2remote(localFile));
 
-            if (!localFile.getAbsolutePath().startsWith(Configuration.getLocalInstallDir())) {
-                throw new RuntimeException("Something pretty bad has happened, the localfile has no local mirror path prefix any more. To avoid any damage, I will bail out!");
+            if (!localFile.getAbsolutePath().startsWith(Configuration.getLocalInstallDir().getAbsolutePath())) {
+                throw new RuntimeException("Something pretty bad has happened, the localfile has no local mirror path prefix any more. To avoid any damage, I will bail out! Localfile is "+localFile.getAbsolutePath()+", local mirror path is "+Configuration.getLocalInstallDir().getAbsolutePath());
             }
         }
         return result;

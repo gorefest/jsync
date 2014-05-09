@@ -61,13 +61,15 @@ public class HelloWorldBuilder extends Builder {
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-        // This is where you 'build' the project.
-        // Since this is a dummy, we just say 'hello world' and call that a build.
 
-        // This also shows how you can consult the global configuration of the builder
+        Configuration.logger = new JenkinsLogger(listener);
+
+        Configuration.logger.info("Begin work");
+        Configuration.logger.info("Build output directory  : "+getBuildDirectory());
+        Configuration.logger.info("Local mirror directory  : "+getLocalMirror());
+        Configuration.logger.info("Remote deploy directory : "+getRemoteDirectory());
         Jsync jsync = new Jsync();
         Configuration.init(getBuildDirectory(), getLocalMirror(), getRemoteDirectory());
-        Configuration.logger = new JenkinsLogger(listener);
         Configuration.debugEnabled = getDescriptor().isEnabled();
         jsync.process();
 
@@ -125,8 +127,6 @@ public class HelloWorldBuilder extends Builder {
                 throws IOException, ServletException {
             if (value.length() == 0)
                 return FormValidation.error("Please set a name");
-            if (value.length() < 4)
-                return FormValidation.warning("Isn't the name too short?");
             return FormValidation.ok();
         }
 

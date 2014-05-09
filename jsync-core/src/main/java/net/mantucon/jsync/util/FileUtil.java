@@ -40,8 +40,8 @@ public class FileUtil {
      */
     public static final File build2local(File f) {
         String realPath = f.getAbsolutePath();
-        String localPath = new File(Configuration.getLocalInstallDir()).getAbsolutePath();
-        realPath = realPath.replace(new File(Configuration.getLocalBuildDir()).getAbsolutePath(), localPath);
+        String localPath = Configuration.getLocalInstallDir().getAbsolutePath();
+        realPath = realPath.replace(Configuration.getLocalBuildDir().getAbsolutePath(), localPath);
         return new File(realPath);
     }
 
@@ -53,8 +53,8 @@ public class FileUtil {
      */
     public static final File local2build(File f) {
         String realPath = f.getAbsolutePath();
-        String localPath = new File(Configuration.getLocalBuildDir()).getAbsolutePath();
-        realPath = realPath.replace(new File(Configuration.getLocalInstallDir()).getAbsolutePath(), localPath);
+        String localPath = Configuration.getLocalBuildDir().getAbsolutePath();
+        realPath = realPath.replace(Configuration.getLocalInstallDir().getAbsolutePath(), localPath);
         return new File(realPath);
     }
 
@@ -67,8 +67,8 @@ public class FileUtil {
      */
     public static final File local2remote(File f) {
         String realPath = f.getAbsolutePath();
-        String remotePath = new File(Configuration.getRemoteSyncDir()).getAbsolutePath();
-        realPath = realPath.replace(new File(Configuration.getLocalInstallDir()).getAbsolutePath(), remotePath);
+        String remotePath = Configuration.getRemoteSyncDir().getAbsolutePath();
+        realPath = realPath.replace(Configuration.getLocalInstallDir().getAbsolutePath(), remotePath);
         return new File(realPath);
     }
 
