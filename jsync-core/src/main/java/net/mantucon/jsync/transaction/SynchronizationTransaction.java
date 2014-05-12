@@ -20,7 +20,7 @@ public class SynchronizationTransaction {
     private List<Action> cleanupActions= new ArrayList<>();
     private List<Action> actions= new ArrayList<>();
 
-
+    private static final ForkJoinPool threadPool = new ForkJoinPool(8);
 
 
     public void addCleanupAction(Action action) {
@@ -32,39 +32,25 @@ public class SynchronizationTransaction {
     }
 
     public void commit() {
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
         JSyncLogger logger = Configuration.getLogger();
         logger.info("starting Phase 1 :");
         int i = 0;
 
         for (Action action : cleanupActions) {
             if (action instanceof ActionChain) {
-                executorService.submit((Runnable) action);
+                threadPool.invoke((ActionChain) action);
             } else {
                 action.perform();
             }
-        }
-        try {
-            executorService.shutdown();
-            executorService.awaitTermination(1, TimeUnit.HOURS);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
 
         logger.info("...done. starting Phase 2 :");
-        executorService = Executors.newFixedThreadPool(4);
         for (Action action : actions) {
             if (action instanceof ActionChain) {
-                executorService.submit((Runnable) action);
+                threadPool.invoke((ActionChain) action);
             } else {
                 action.perform();
             }
-        }
-        try {
-            executorService.shutdown();
-            executorService.awaitTermination(1, TimeUnit.HOURS);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
 
         logger.info("done.");
