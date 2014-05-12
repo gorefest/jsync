@@ -14,42 +14,46 @@ import java.util.Set;
  */
 public class Configuration {
 
-    private static File  _localBuildDir;
-    private static File  _localInstallDir;
-    private static File _remoteSyncDir;
-    private static SynchronizationTransaction synchronizationTransaction;
-    private static String _handlerClassName = "net.mantucon.jsync.handler.MountPointFileHandler";
+    private static ThreadLocal<File> _localBuildDir = new ThreadLocal<>();
+    private static ThreadLocal<File>_localInstallDir= new ThreadLocal<>();
+    private static ThreadLocal<File>_remoteSyncDir= new ThreadLocal<>();
+    private static ThreadLocal<SynchronizationTransaction> synchronizationTransaction= new ThreadLocal<>();
+    private static ThreadLocal<String> _handlerClassName = new ThreadLocal<>();
     public static boolean debugEnabled=false;
     public static JSyncLogger logger = new JSyncStandardLogger();
 
-    private static final Set<String> alreadyDoneDirectories = Collections.synchronizedSet(new HashSet<String>());
+    private static final ThreadLocal<Set<String>> alreadyDoneDirectories = new ThreadLocal<>();
 
+    public static void init() {
+        alreadyDoneDirectories.set(Collections.synchronizedSet(new HashSet<String>()));
+    }
 
     public static void init(String localBuildDir, String localInstallDir, String remoteSyncDir) {
-        _localBuildDir = new File(localBuildDir);
-        _localInstallDir = new File(localInstallDir);
-        _remoteSyncDir = new File(remoteSyncDir);
-        alreadyDoneDirectories.clear();
+        _localBuildDir.set(new File(localBuildDir));
+        _localInstallDir.set(new File(localInstallDir));
+        _remoteSyncDir.set(new File(remoteSyncDir));
+        _handlerClassName.set("net.mantucon.jsync.handler.MountPointFileHandler");
+        init();
     }
 
     public static final File getLocalBuildDir() {
-        return _localBuildDir;
+        return _localBuildDir.get();
     }
 
     public static final File getLocalInstallDir() {
-        return _localInstallDir;
+        return _localInstallDir.get();
     }
 
     public static final File getRemoteSyncDir() {
-        return _remoteSyncDir;
+        return _remoteSyncDir.get();
     }
 
     public static final SynchronizationTransaction getSynchronizationTransaction() {
-        return synchronizationTransaction;
+        return synchronizationTransaction.get();
     }
 
     public static String getHandlerClassName() {
-        return _handlerClassName;
+        return _handlerClassName.get();
     }
 
     public static boolean isDebugEnabled() {
@@ -61,10 +65,10 @@ public class Configuration {
     }
 
     public static void addDirectory(File directory) {
-        alreadyDoneDirectories.add(directory.getAbsolutePath());
+        alreadyDoneDirectories.get().add(directory.getAbsolutePath());
     }
 
     public static boolean isAlreadyDone(File directory) {
-        return alreadyDoneDirectories.contains(directory.getAbsolutePath());
+        return alreadyDoneDirectories.get().contains(directory.getAbsolutePath());
     }
 }

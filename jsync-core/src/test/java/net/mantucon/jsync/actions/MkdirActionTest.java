@@ -1,6 +1,7 @@
 package net.mantucon.jsync.actions;
 
 import junit.framework.TestCase;
+import net.mantucon.jsync.Configuration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,7 @@ public class MkdirActionTest{
 
     @Before
     public void setup() throws Exception{
+        Configuration.init();
         tmp = File.createTempFile("foo","bar");
         tmp.deleteOnExit();
         probeDir = new File(tmp.getAbsolutePath()+File.pathSeparator+(new Date()).getTime());

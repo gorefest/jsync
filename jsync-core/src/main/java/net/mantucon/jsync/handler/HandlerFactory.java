@@ -8,19 +8,19 @@ import java.io.File;
  * Created by marcus on 15.04.14.
  */
 public class HandlerFactory {
-    static Class<?> handlerClass;
+    static ThreadLocal<Class<?>> handlerClass = new ThreadLocal<>();
 
     public static Handler produceHandlerInstance() {
-        if (handlerClass == null) {
+        if (handlerClass.get() == null) {
             try {
-                handlerClass = Class.forName(Configuration.getHandlerClassName());
-                return (Handler) handlerClass.newInstance();
+                handlerClass.set(Class.forName(Configuration.getHandlerClassName()));
+                return (Handler) handlerClass.get().newInstance();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } else {
             try {
-                return (Handler) handlerClass.newInstance();
+                return (Handler) handlerClass.get().newInstance();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

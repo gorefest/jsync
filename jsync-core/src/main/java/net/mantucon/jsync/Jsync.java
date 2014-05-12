@@ -12,7 +12,7 @@ import java.util.concurrent.ForkJoinPool;
  */
 public class Jsync
 {
-    private static final ForkJoinPool crawlerPool = new ForkJoinPool(8);
+    private final ForkJoinPool crawlerPool = new ForkJoinPool(8);
 
     public static void main( String[] args ) throws InterruptedException {
         JSyncLogger logger = Configuration.getLogger();
