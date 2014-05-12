@@ -20,7 +20,7 @@ public class SynchronizationTransaction {
     private List<Action> cleanupActions= new ArrayList<>();
     private List<Action> actions= new ArrayList<>();
 
-    private static final ForkJoinPool threadPool = new ForkJoinPool(8);
+    private final ForkJoinPool threadPool = new ForkJoinPool(8);
 
 
     public void addCleanupAction(Action action) {
