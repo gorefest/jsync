@@ -1,6 +1,7 @@
 package net.mantucon.jsync.actions;
 
 
+import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.actions.steps.BackupFileInSituStep;
 import net.mantucon.jsync.actions.steps.BackupFileStep;
 
@@ -28,6 +29,9 @@ public class DeleteFileAction implements Action {
             throw new ActionFailedException(targetFile +" is write protected!");
         }
         undoStep= new BackupFileInSituStep(targetFile);
+        if (Configuration.isDebugEnabled()) {
+            Configuration.getLogger().info("DELETE "+targetFile.getAbsolutePath());
+        }
         targetFile.delete();
     }
 

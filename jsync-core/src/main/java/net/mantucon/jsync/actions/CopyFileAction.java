@@ -29,6 +29,11 @@ public class CopyFileAction implements Action{
             undoSteps.add(new BackupFileInSituStep(destFile));
         } else {
             File parent = destFile.getParentFile();
+
+            if (!parent.canWrite() || !parent.canRead())
+            {
+                throw new ActionFailedException("Unable to read/write directory "+parent.getAbsolutePath());
+            }
             Stack<MkdirStep> mkdirs = new Stack<>();
             MkdirStep md;
 
