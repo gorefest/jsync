@@ -25,15 +25,17 @@ public class MkdirAction implements Action {
 
     @Override
     public void perform() {
-        if (targetDir.exists() && !targetDir.isDirectory()) {
-            throw new ActionFailedException("Target file exists, but is not a directory!");
-        } else if (!targetDir.exists() && !alreadyDone.contains(targetDir.getAbsolutePath())) {
-            new MkdirStep(targetDir).perform();
-            alreadyDone.add(targetDir.getAbsolutePath());
-            undoStep = new RmDirStep(targetDir);
-            Thread.yield();
-            if (!targetDir.exists()) {
-                throw new ActionFailedException("MKDIR failed!");
+        if (!alreadyDone.contains(targetDir.getAbsolutePath())) {
+            if (targetDir.exists() && !targetDir.isDirectory()) {
+                throw new ActionFailedException("Target file exists, but is not a directory!");
+            } else if (!targetDir.exists()) {
+                new MkdirStep(targetDir).perform();
+                alreadyDone.add(targetDir.getAbsolutePath());
+                undoStep = new RmDirStep(targetDir);
+                Thread.yield();
+                if (!targetDir.exists()) {
+                    throw new ActionFailedException("MKDIR failed!");
+                }
             }
         }
     }
