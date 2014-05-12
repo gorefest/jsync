@@ -30,7 +30,7 @@ public class CopyFileAction implements Action{
         } else {
             File parent = destFile.getParentFile();
 
-            if (!parent.canWrite() || !parent.canRead())
+            if (parent.exists() && (!parent.canWrite() || !parent.canRead()))
             {
                 throw new ActionFailedException("Unable to read/write directory "+parent.getAbsolutePath());
             }
