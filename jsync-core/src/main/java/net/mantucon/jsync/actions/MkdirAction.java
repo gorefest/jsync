@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class MkdirAction implements Action {
 
-    Set<String> alreadyDone = Collections.synchronizedSet(new HashSet<String>());
+    private static final Set<String> alreadyDone = Collections.synchronizedSet(new HashSet<String>());
 
     final File targetDir;
     private Step undoStep;
