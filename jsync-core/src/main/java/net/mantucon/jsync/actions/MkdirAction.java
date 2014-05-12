@@ -1,5 +1,6 @@
 package net.mantucon.jsync.actions;
 
+import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.actions.steps.MkdirStep;
 import net.mantucon.jsync.actions.steps.RmDirStep;
 
@@ -14,7 +15,6 @@ import java.util.Set;
  */
 public class MkdirAction implements Action {
 
-    private static final Set<String> alreadyDone = Collections.synchronizedSet(new HashSet<String>());
 
     final File targetDir;
     private Step undoStep;
@@ -25,12 +25,12 @@ public class MkdirAction implements Action {
 
     @Override
     public void perform() {
-        if (!alreadyDone.contains(targetDir.getAbsolutePath())) {
+        if (!Configuration.isAlreadyDone(targetDir)) {
             if (targetDir.exists() && !targetDir.isDirectory()) {
                 throw new ActionFailedException("Target file exists, but is not a directory!");
             } else if (!targetDir.exists()) {
                 new MkdirStep(targetDir).perform();
-                alreadyDone.add(targetDir.getAbsolutePath());
+                Configuration.addDirectory(targetDir);
                 undoStep = new RmDirStep(targetDir);
                 Thread.yield();
                 if (!targetDir.exists()) {
@@ -49,6 +49,7 @@ public class MkdirAction implements Action {
     public boolean isProcessed() {
         return undoStep != null;
     }
+
 
 
 }

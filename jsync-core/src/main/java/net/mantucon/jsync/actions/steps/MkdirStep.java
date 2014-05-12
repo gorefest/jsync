@@ -22,10 +22,13 @@ public class MkdirStep implements Step {
     @Override
     public void perform() {
         JSyncLogger logger = Configuration.getLogger();
-        if (logger.isDebugEnabled()) {
-            logger.info(Thread.currentThread().getName()+" : MKDIR "+targetDir.getAbsolutePath());
+        if (!Configuration.isAlreadyDone(targetDir)) {
+            if (logger.isDebugEnabled()) {
+                logger.info(Thread.currentThread().getName()+" : MKDIR "+targetDir.getAbsolutePath());
+            }
+            targetDir.mkdir();
+            Configuration.addDirectory(targetDir);
         }
-        targetDir.mkdir();
     }
 
     public File getTargetDir() {
