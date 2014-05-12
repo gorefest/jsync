@@ -1,19 +1,18 @@
 package net.mantucon.jsync;
 
 /*
- * Copyright 2001-2005 The Apache Software Foundation.
+ * JSYNC Jenkins builder
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This builder is configurable through jenkins (verbose yes/no) and
+ * allows a per-job configuration for syncing drives.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * It currenty takes three job parameters.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 1. build dir - the build output directory from where the sync data is loaded
+ * 2. local mirror - the local mirror directory which is used as a staging area
+ *                   this directory is the exact copy of the remote file
+ * 3. remote directory - remote drive where jsync is going to synchronize the files
+ *
  */
 
 import net.mantucon.jsync.actions.Step;
@@ -46,8 +45,6 @@ public class JsyncMojo
 
     @Parameter(defaultValue = "${remoteDirectory}")
     private String remoteDirectory;
-
-
 
     public void execute()
             throws MojoExecutionException {
