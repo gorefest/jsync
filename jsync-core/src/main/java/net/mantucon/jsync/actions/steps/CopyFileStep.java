@@ -28,7 +28,7 @@ public class CopyFileStep extends BaseStep implements Step {
     private void performCopy() {
         JSyncLogger logger = configuration.getLogger();
         if (configuration.isDebugEnabled()) {
-            logger.info(Thread.currentThread().getName() + ": COPY "+sourceFile.getAbsolutePath());
+            logger.info(Thread.currentThread().getName() + ": COPY "+sourceFile.getAbsolutePath() + " TO " + destFile.getAbsolutePath());
         }
 
         try {
@@ -46,7 +46,8 @@ public class CopyFileStep extends BaseStep implements Step {
             outputStream.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Copying has failed! Reason : "+e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 

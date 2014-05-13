@@ -23,7 +23,7 @@ public class MkdirStep extends BaseStep implements Step {
     @Override
     public void perform() {
         JSyncLogger logger = configuration.getLogger();
-        if (!configuration.isAlreadyDone(targetDir)) {
+        if (!configuration.isAlreadyDone(targetDir) && !targetDir.exists()) {
             if (configuration.isDebugEnabled()) {
                 logger.info(Thread.currentThread().getName()+" : MKDIR "+targetDir.getAbsolutePath());
             }
