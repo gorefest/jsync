@@ -12,6 +12,7 @@ import hudson.tasks.BuildStepDescriptor;
 import jenkins.model.Jenkins;
 import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.Jsync;
+import net.mantucon.jsync.util.JSyncLogger;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
@@ -65,7 +66,8 @@ public class HelloWorldBuilder extends Builder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
 
-        Configuration.logger = new JenkinsLogger(listener);
+        JSyncLogger logger = new JenkinsLogger(listener);
+        Configuration.setLogger(logger);
 
         try {
             EnvVars vars = build.getEnvironment(listener);
@@ -74,13 +76,13 @@ public class HelloWorldBuilder extends Builder {
             String localMirror = vars.expand(getLocalMirror());
             String remoteDirectory = vars.expand(getRemoteDirectory());
 
-            Configuration.logger.info("Begin work");
-            Configuration.logger.info("Build output directory  : "+buildDirectory);
-            Configuration.logger.info("Local mirror directory  : "+localMirror);
-            Configuration.logger.info("Remote deploy directory : "+remoteDirectory);
+            logger.info("Begin work");
+            logger.info("Build output directory  : "+buildDirectory);
+            logger.info("Local mirror directory  : "+localMirror);
+            logger.info("Remote deploy directory : "+remoteDirectory);
             Jsync jsync = new Jsync();
             Configuration.init(buildDirectory, localMirror, remoteDirectory);
-            Configuration.debugEnabled = getDescriptor().isEnabled();
+            Configuration.setDebugEnabled(getDescriptor().isEnabled());
             jsync.process();
         } catch (Exception e) {
             e.printStackTrace();

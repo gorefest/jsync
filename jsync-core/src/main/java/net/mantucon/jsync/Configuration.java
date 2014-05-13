@@ -19,8 +19,8 @@ public class Configuration {
     private static ThreadLocal<File>_remoteSyncDir= new ThreadLocal<>();
     private static ThreadLocal<SynchronizationTransaction> synchronizationTransaction= new ThreadLocal<>();
     private static ThreadLocal<String> _handlerClassName = new ThreadLocal<>();
-    public static boolean debugEnabled=false;
-    public static JSyncLogger logger = new JSyncStandardLogger();
+    private static ThreadLocal<Boolean> debugEnabled=new ThreadLocal<>();
+    private static ThreadLocal<JSyncLogger> logger =new ThreadLocal<>();
 
     private static final ThreadLocal<Set<String>> alreadyDoneDirectories = new ThreadLocal<>();
 
@@ -57,11 +57,21 @@ public class Configuration {
     }
 
     public static boolean isDebugEnabled() {
-        return debugEnabled;
+        if (debugEnabled.get() == null){
+            debugEnabled.set(Boolean.valueOf(false));
+        }
+        return debugEnabled.get();
     }
-    
+
+    public static void setDebugEnabled(boolean value) {
+        debugEnabled.set(value);
+    }
+
     public static JSyncLogger getLogger() {
-        return logger;
+        if (logger.get() == null) {
+            logger.set(new JSyncStandardLogger());
+        }
+        return logger.get();
     }
 
     public static void addDirectory(File directory) {
@@ -70,5 +80,17 @@ public class Configuration {
 
     public static boolean isAlreadyDone(File directory) {
         return alreadyDoneDirectories.get().contains(directory.getAbsolutePath());
+    }
+
+    public static void free() {
+        _localBuildDir.set(null);
+        _localInstallDir.set(null);
+        _remoteSyncDir.set(null);
+        _handlerClassName.set(null);
+        alreadyDoneDirectories.get().clear();
+        alreadyDoneDirectories.set(null);
+    }
+    public static void setLogger(JSyncLogger logger1) {
+        logger.set(logger1);
     }
 }

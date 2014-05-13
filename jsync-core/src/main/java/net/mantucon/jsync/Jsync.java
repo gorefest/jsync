@@ -26,7 +26,7 @@ public class Jsync
         logger.info("starting");
         Configuration.init(args[0],args[1],args[2]);
 
-        Configuration.debugEnabled = true;
+        Configuration.setDebugEnabled(true);
         logger.info("Build Dir : "+args[0]);
         logger.info("Local Mirror: "+args[1]);
         logger.info("Remote Dir : "+args[2]);
