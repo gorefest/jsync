@@ -1,5 +1,6 @@
 package net.mantucon.jsync.actions;
 
+import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.Fixtures.FileFixture;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,8 +32,13 @@ public class CopyFileActionTest {
     File s3,d3;
     File s4,d4;
 
+    Configuration testConfig;
+
+
     @Before
     public void setup() throws IOException {
+        testConfig = FileFixture.getTestConfiguration();
+
         sourceDir= createTempDirectory("source");
         s1 = createLargeTestFile(sourceDir, "test1.txt");
         destDir = createTempDirectory("dest");
@@ -62,7 +68,7 @@ public class CopyFileActionTest {
      */
     @Test
     public void testPerform1() throws Exception {
-        CopyFileAction copyFileAction = new CopyFileAction(s1,d1);
+        CopyFileAction copyFileAction = new CopyFileAction(testConfig, s1,d1);
         copyFileAction.perform();
 
         assertFileExists(d1);
@@ -85,7 +91,7 @@ public class CopyFileActionTest {
      */
     @Test
     public void testPerform2() throws Exception {
-        CopyFileAction copyFileAction = new CopyFileAction(s2,d2);
+        CopyFileAction copyFileAction = new CopyFileAction(testConfig, s2,d2);
 
         assertFileExists(d2);
         assertNotEmpty(d2);
@@ -113,7 +119,7 @@ public class CopyFileActionTest {
      */
     @Test
     public void testPerform3() throws Exception {
-        CopyFileAction copyFileAction = new CopyFileAction(s3,d3);
+        CopyFileAction copyFileAction = new CopyFileAction(testConfig, s3,d3);
         assertFileDoesntExist(d3);
         assertFileDoesntExist(d3.getParentFile());
 
@@ -137,7 +143,7 @@ public class CopyFileActionTest {
      */
     @Test
     public void testPerform4() throws Exception {
-        CopyFileAction copyFileAction = new CopyFileAction(s4,d4);
+        CopyFileAction copyFileAction = new CopyFileAction(testConfig, s4,d4);
         assertFileDoesntExist(d4);
         assertFileDoesntExist(d4.getParentFile());
         assertFileDoesntExist(d4.getParentFile().getParentFile());

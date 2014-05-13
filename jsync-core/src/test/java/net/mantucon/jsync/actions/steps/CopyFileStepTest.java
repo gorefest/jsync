@@ -36,7 +36,7 @@ public class CopyFileStepTest {
 
     @Test
     public void testPerform() throws Exception {
-        CopyFileStep step = new CopyFileStep(infile, outfile);
+        CopyFileStep step = new CopyFileStep(FileFixture.getTestConfiguration(), infile, outfile);
         assertEquals(0L, outfile.length());
         step.perform();
         assertEquals(infile.length(), outfile.length());

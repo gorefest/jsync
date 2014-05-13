@@ -1,11 +1,13 @@
 package net.mantucon.jsync.actions;
 
+import net.mantucon.jsync.Configuration;
+import net.mantucon.jsync.actions.steps.BaseStep;
 import net.mantucon.jsync.actions.steps.StepChain;
 
 /**
  * Created by marcus on 05.05.14.
  */
-public class CombinedAction implements Action {
+public class CombinedAction extends BaseStep implements Action {
 
     Action mirrorAction;
     Action remoteAction;
@@ -13,14 +15,15 @@ public class CombinedAction implements Action {
     boolean remoteProcessed;
 
 
-    public CombinedAction(Action mirrorAction, Action remoteAction) {
+    public CombinedAction(Configuration configuration,Action mirrorAction, Action remoteAction) {
+        super(configuration);
         this.mirrorAction = mirrorAction;
         this.remoteAction = remoteAction;
     }
 
     @Override
     public Step getUndoStep() {
-        StepChain result = new StepChain();
+        StepChain result = new StepChain(configuration);
         if (mirrorProcessed ) {
             result.add(mirrorAction.getUndoStep());
         }
@@ -51,5 +54,15 @@ public class CombinedAction implements Action {
 
     public Action getRemoteAction() {
         return remoteAction;
+    }
+
+    @Override
+    public String toString() {
+        return "CombinedAction{" +
+                "mirrorAction=" + mirrorAction +
+                ", remoteAction=" + remoteAction +
+                ", mirrorProcessed=" + mirrorProcessed +
+                ", remoteProcessed=" + remoteProcessed +
+                '}';
     }
 }

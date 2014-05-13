@@ -16,6 +16,9 @@ package net.mantucon.jsync;
  */
 
 import net.mantucon.jsync.actions.Step;
+import net.mantucon.jsync.handler.MountPointFileHandler;
+import net.mantucon.jsync.transaction.SynchronizationTransaction;
+import net.mantucon.jsync.util.JSyncStandardLogger;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -61,11 +64,11 @@ public class JsyncMojo
             throw new RuntimeException("No remote directory defined. Please define a build directory in the plugin properties");
         }
 
-        Configuration.init(buildDirectory, localMirror, remoteDirectory);
+        Configuration conf = new Configuration(new File(buildDirectory), new File(localMirror), new File(remoteDirectory), new SynchronizationTransaction(), MountPointFileHandler.class.getName(), true, new JSyncStandardLogger());
 
         Jsync jsync = new Jsync();
 
-        jsync.process();
+        jsync.process(conf);
 
         getLog().info("Done.");
 

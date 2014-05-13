@@ -53,40 +53,55 @@ public class CrawlerTask extends RecursiveTask<Action> {
 
     public static enum Mode { BUILD_DIR, LOCAL_MIRROR }
 
-    CrawlerTask(File folder, Mode mode) {
+    private final Configuration configuration;
+    private final HandlerFactory handlerFactory;
+
+
+    CrawlerTask(Configuration configuration, File folder, Mode mode) {
         super();
+        this.configuration = configuration;
         this.folder = folder;
         this.mode = mode;
+
+        handlerFactory = new HandlerFactory(configuration);
+    }
+
+
+    public CrawlerTask(Configuration configuration, HandlerFactory handlerFactory, File folder, Mode mode) {
+        this.folder = folder;
+        this.mode = mode;
+        this.configuration = configuration;
+        this.handlerFactory = handlerFactory;
     }
 
     @Override
     protected Action compute() {
-        JSyncLogger logger = Configuration.getLogger();
+        JSyncLogger logger = configuration.getLogger();
 
-        if (logger.isDebugEnabled()) {
+        if (configuration.isDebugEnabled()) {
             logger.info(Thread.currentThread().getName() + " : entering " + folder.getName());
         }
-        ActionChain result = new ActionChain();
+        ActionChain result = new ActionChain(configuration);
 
 
         // 1. ENTER
         // TODO : check using CombinedActionChain to differ provisioning to mirror or remote device!!
-        Handler handler = HandlerFactory.produceHandlerInstance();
+        Handler handler = handlerFactory.produceHandlerInstance();
 
 
         List<RecursiveTask<Action>> taskList = new LinkedList<>();
         for (File subFile : handler.listSubfiles(folder)) {
             if (subFile.isDirectory()) {
-                if (logger.isDebugEnabled()) {
+                if (configuration.isDebugEnabled()) {
                     logger.info(Thread.currentThread().getName() + " : Dir "+subFile.getName());
                 }
                 // 2. SPAWN
-                CrawlerTask task = new CrawlerTask(subFile, mode);
+                CrawlerTask task = new CrawlerTask(configuration, handlerFactory, subFile, mode);
                 taskList.add(task);
                 task.fork();
             } else {
                 // 3. FILE
-                if (logger.isDebugEnabled()) {
+                if (configuration.isDebugEnabled()) {
                     logger.info(Thread.currentThread().getName() + " : Processing " + subFile.getName());
                 }
                 switch (mode){

@@ -4,19 +4,21 @@ package net.mantucon.jsync.actions;
 import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.actions.steps.BackupFileInSituStep;
 import net.mantucon.jsync.actions.steps.BackupFileStep;
+import net.mantucon.jsync.actions.steps.BaseStep;
 
 import java.io.File;
 
 /**
  * Created by marcus on 15.04.14.
  */
-public class DeleteFileAction implements Action {
+public class DeleteFileAction extends BaseStep implements Action {
 
     private final File targetFile;
 
     Step undoStep;
 
-    public DeleteFileAction(File targetFile) {
+    public DeleteFileAction(Configuration configuration, File targetFile) {
+        super(configuration);
         this.targetFile = targetFile;
     }
 
@@ -28,9 +30,9 @@ public class DeleteFileAction implements Action {
         } else if (targetFile.exists() && !targetFile.canWrite()) {
             throw new ActionFailedException(targetFile +" is write protected!");
         }
-        undoStep= new BackupFileInSituStep(targetFile);
-        if (Configuration.isDebugEnabled()) {
-            Configuration.getLogger().info("DELETE "+targetFile.getAbsolutePath());
+        undoStep= new BackupFileInSituStep(configuration, targetFile);
+        if (configuration.isDebugEnabled()) {
+            configuration.getLogger().info("DELETE "+targetFile.getAbsolutePath());
         }
         targetFile.delete();
     }
@@ -45,5 +47,11 @@ public class DeleteFileAction implements Action {
         return undoStep != null;
     }
 
-
+    @Override
+    public String toString() {
+        return "DeleteFileAction{" +
+                "targetFile=" + targetFile +
+                ", undoStep=" + undoStep +
+                '}';
+    }
 }

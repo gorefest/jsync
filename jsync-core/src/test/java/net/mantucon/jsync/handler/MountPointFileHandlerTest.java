@@ -2,8 +2,11 @@ package net.mantucon.jsync.handler;
 
 import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.Fixtures.CopyFileFixture;
+import net.mantucon.jsync.Fixtures.FileFixture;
 import net.mantucon.jsync.actions.Action;
 import net.mantucon.jsync.actions.Step;
+import net.mantucon.jsync.transaction.SynchronizationTransaction;
+import net.mantucon.jsync.util.JSyncStandardLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +30,8 @@ public class MountPointFileHandlerTest {
     CopyFileFixture.FileStructure destFileStructure;
     CopyFileFixture.FileStructure remoteFileStructure;
 
+    Configuration configuration;
+
     @Before
     public void setUp() throws Exception {
         sourceRoot = createTempDirectory("source");
@@ -42,8 +47,7 @@ public class MountPointFileHandlerTest {
 
         remoteFileStructure = CopyFileFixture.initializeTestFileStructure(remoteRoot);
 
-
-        Configuration.init(sourceRoot.getAbsolutePath(), destRoot.getAbsolutePath(), remoteRoot.getAbsolutePath());
+        configuration = new Configuration(sourceRoot, destRoot, remoteRoot,new SynchronizationTransaction(),MountPointFileHandler.class.getName(),true,new JSyncStandardLogger());
 
     }
 
@@ -60,7 +64,7 @@ public class MountPointFileHandlerTest {
      */
     @Test
     public void testHandleFile() throws Exception {
-        Handler  handler = HandlerFactory.produceHandlerInstance();
+        Handler  handler = new HandlerFactory(configuration).produceHandlerInstance();
         assertNotNull(handler);
 
         Action action = handler.handleSourceFile(sourceFileStructure.file1);
@@ -89,7 +93,7 @@ public class MountPointFileHandlerTest {
 
     @Test
     public void testHandleFile2() throws Exception {
-        Handler  handler = HandlerFactory.produceHandlerInstance();
+        Handler  handler = new HandlerFactory(configuration).produceHandlerInstance();
         assertNotNull(handler);
 
         Action action = handler.handleSourceFile(sourceFileStructure.file121);
@@ -127,7 +131,7 @@ public class MountPointFileHandlerTest {
      */
     @Test
     public void testHandleFile3() throws Exception {
-        Handler  handler = HandlerFactory.produceHandlerInstance();
+        Handler  handler = new HandlerFactory(configuration).produceHandlerInstance();
         assertNotNull(handler);
 
         sourceFileStructure.file121.delete();
@@ -167,7 +171,7 @@ public class MountPointFileHandlerTest {
      */
     @Test
     public void testHandleFile4() throws Exception {
-        Handler  handler = HandlerFactory.produceHandlerInstance();
+        Handler  handler = new HandlerFactory(configuration).produceHandlerInstance();
         assertNotNull(handler);
 
         sourceFileStructure.file121.delete();

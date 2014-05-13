@@ -22,6 +22,13 @@ public class SynchronizationTransaction {
 
     private final ForkJoinPool threadPool = new ForkJoinPool(8);
 
+    public SynchronizationTransaction() {
+
+    }
+
+    public SynchronizationTransaction(List<Action> cleanupActions) {
+        this.cleanupActions = cleanupActions;
+    }
 
     public void addCleanupAction(Action action) {
         cleanupActions.add(action);
@@ -31,9 +38,8 @@ public class SynchronizationTransaction {
         actions.add(action);
     }
 
-    public void commit() {
-        JSyncLogger logger = Configuration.getLogger();
-        logger.info("starting Phase 1 :");
+    public void commit(JSyncLogger logger) {
+       logger.info("starting Phase 1 :");
         int i = 0;
 
         for (Action action : cleanupActions) {

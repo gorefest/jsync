@@ -8,11 +8,6 @@ import net.mantucon.jsync.Configuration;
 public class JSyncStandardLogger implements JSyncLogger {
 
     @Override
-    public boolean isDebugEnabled() {
-        return Configuration.isDebugEnabled();
-    }
-
-    @Override
     public void info(String what) {
         System.out.println("INFO : "+what);
     }

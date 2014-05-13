@@ -1,8 +1,11 @@
 package net.mantucon.jsync.actions.steps;
 
+import net.mantucon.jsync.Fixtures.FileFixture;
 import net.mantucon.jsync.actions.Step;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,8 +33,8 @@ public class StepChainTest {
     StepChain chain;
 
     @Before
-    public void before() {
-        chain = new StepChain();
+    public void before() throws IOException {
+        chain = new StepChain(FileFixture.getTestConfiguration());
     }
 
 

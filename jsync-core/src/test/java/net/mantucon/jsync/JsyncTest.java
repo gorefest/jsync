@@ -38,8 +38,6 @@ public class JsyncTest {
         remoteFileStructure = CopyFileFixture.initializeTestFileStructure(remoteRoot);
         remoteFileStructure.create();
 
-        Configuration.init(sourceRoot.getAbsolutePath(), destRoot.getAbsolutePath(), remoteRoot.getAbsolutePath());
-
     }
 
 

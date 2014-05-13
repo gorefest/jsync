@@ -15,10 +15,6 @@ public class JenkinsLogger implements JSyncLogger {
         this.listener = listener;
     }
 
-    @Override
-    public boolean isDebugEnabled() {
-        return Configuration.isDebugEnabled();
-    }
 
     @Override
     public void info(String s) {

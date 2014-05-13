@@ -1,5 +1,6 @@
 package net.mantucon.jsync.actions;
 
+import net.mantucon.jsync.Fixtures.FileFixture;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,7 +47,7 @@ public class RmDirActionTest {
     @Test
     public void testPerform() throws Exception {
         probeDir.mkdir();
-        RmDirAction probe = new RmDirAction(probeDir);
+        RmDirAction probe = new RmDirAction(FileFixture.getTestConfiguration(), probeDir);
         probe.perform();
         assertFalse(probeDir.exists());
         probe.getUndoStep().perform();
@@ -60,7 +61,7 @@ public class RmDirActionTest {
     @Test(expected = Action.ActionFailedException.class)
     public void testPerformBadDir() throws Exception {
         assertTrue(probeDir.createNewFile());
-        RmDirAction probe = new RmDirAction(probeDir);
+        RmDirAction probe = new RmDirAction(FileFixture.getTestConfiguration(), probeDir);
         probe.perform();
 
     }
@@ -75,7 +76,7 @@ public class RmDirActionTest {
         probeDir.setWritable(false,false);
         assertFalse(probeDir.canWrite());
 
-        RmDirAction probe = new RmDirAction(probeDir);
+        RmDirAction probe = new RmDirAction(FileFixture.getTestConfiguration(), probeDir);
         probe.perform();
 
     }

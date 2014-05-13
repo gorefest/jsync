@@ -1,5 +1,6 @@
 package net.mantucon.jsync.actions;
 
+import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.FileAssertions;
 import net.mantucon.jsync.Fixtures.FileFixture;
 import org.junit.Before;
@@ -18,9 +19,12 @@ public class DeleteFileActionTest {
 
     File f1, f2;
     File directory;
+    Configuration testConfig;
 
     @Before
     public void before() throws Exception {
+        testConfig = FileFixture.getTestConfiguration();
+
         directory = createTempDirectory("testDir");
         f1 = createSmallTestFile(directory, "test.txt");
         f2 = createSmallTestFile(directory, "test2.txt");
@@ -33,7 +37,7 @@ public class DeleteFileActionTest {
      */
     @Test
     public void testGetUndoStep() throws Exception {
-        DeleteFileAction action = new DeleteFileAction(f1);
+        DeleteFileAction action = new DeleteFileAction(testConfig, f1);
         assertFileExists(f1);
         assertIsFile(f1);
 

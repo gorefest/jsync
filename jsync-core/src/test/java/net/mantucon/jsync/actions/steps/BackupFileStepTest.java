@@ -1,5 +1,6 @@
 package net.mantucon.jsync.actions.steps;
 
+import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.Fixtures.FileFixture;
 import org.junit.After;
 import org.junit.Before;
@@ -17,8 +18,11 @@ public class BackupFileStepTest {
 
     File probeFile;
 
+    Configuration testConfig;
+
     @Before
     public void setUp() throws Exception {
+        testConfig = FileFixture.getTestConfiguration();
         probeFile = File.createTempFile("probe","txt");
         FileFixture.createSmallTestFile(probeFile);
         probeFile.deleteOnExit();
@@ -32,7 +36,7 @@ public class BackupFileStepTest {
 
     @Test
     public void testPerform() throws Exception {
-        BackupFileStep candidate = new BackupFileStep(probeFile);
+        BackupFileStep candidate = new BackupFileStep(testConfig, probeFile);
 
         assertTrue(candidate.getTempFile().isFile());
         assertTrue(candidate.getTempFile().exists());

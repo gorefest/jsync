@@ -2,6 +2,7 @@ package net.mantucon.jsync.actions;
 
 import junit.framework.TestCase;
 import net.mantucon.jsync.Configuration;
+import net.mantucon.jsync.Fixtures.FileFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,9 +25,12 @@ public class MkdirActionTest{
     File probeDir;
     File realProbe;
 
+    Configuration testConfig;
+
     @Before
     public void setup() throws Exception{
-        Configuration.init();
+        testConfig = FileFixture.getTestConfiguration();
+
         tmp = File.createTempFile("foo","bar");
         tmp.deleteOnExit();
         probeDir = new File(tmp.getAbsolutePath()+File.pathSeparator+(new Date()).getTime());
@@ -48,7 +52,7 @@ public class MkdirActionTest{
      */
     @Test
     public void testPerform() throws Exception {
-        MkdirAction probe = new MkdirAction(probeDir);
+        MkdirAction probe = new MkdirAction(testConfig, probeDir);
         probe.perform();
         assertTrue(probeDir.exists());
         assertTrue(probeDir.isDirectory());
@@ -69,7 +73,7 @@ public class MkdirActionTest{
         assertTrue(probeDir.exists());
         assertTrue(probeDir.isFile());
         assertFalse(probeDir.isDirectory());
-        MkdirAction probe = new MkdirAction(probeDir);
+        MkdirAction probe = new MkdirAction(testConfig, probeDir);
         probe.perform();
     }
 
@@ -81,7 +85,7 @@ public class MkdirActionTest{
     @Test(expected = Action.ActionFailedException.class)
     public void testPerformBadTargetDir() {
         // at first, create a new directory
-        MkdirAction probe = new MkdirAction(probeDir);
+        MkdirAction probe = new MkdirAction(testConfig, probeDir);
         probe.perform();
         assertTrue(probeDir.exists());
         assertTrue(probeDir.isDirectory());
@@ -92,7 +96,7 @@ public class MkdirActionTest{
 
         // now mkdir must fail
         File realProbe = new File(probeDir.getAbsolutePath()+File.separatorChar+(new Date()).getTime());
-        probe = new MkdirAction(realProbe);
+        probe = new MkdirAction(testConfig, realProbe);
         probe.perform();
 
 

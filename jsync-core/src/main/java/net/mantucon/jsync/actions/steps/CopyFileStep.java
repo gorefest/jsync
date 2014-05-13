@@ -9,12 +9,13 @@ import java.io.*;
 /**
  * Created by marcus on 15.04.14.
  */
-public class CopyFileStep implements Step {
+public class CopyFileStep extends BaseStep implements Step {
 
     private final File sourceFile;
     private final File destFile;
 
-    public CopyFileStep(File sourceFile, File destFile) {
+    public CopyFileStep(Configuration configuration,File sourceFile, File destFile) {
+        super(configuration);
         this.sourceFile = sourceFile;
         this.destFile = destFile;
     }
@@ -25,8 +26,8 @@ public class CopyFileStep implements Step {
     }
 
     private void performCopy() {
-        JSyncLogger logger = Configuration.getLogger();
-        if (logger.isDebugEnabled()) {
+        JSyncLogger logger = configuration.getLogger();
+        if (configuration.isDebugEnabled()) {
             logger.info(Thread.currentThread().getName() + ": COPY "+sourceFile.getAbsolutePath());
         }
 

@@ -11,23 +11,24 @@ import java.io.File;
 /**
  * Created by marcus on 15.04.14.
  */
-public class MkdirStep implements Step {
+public class MkdirStep extends BaseStep implements Step {
 
     final File targetDir;
 
-    public MkdirStep(File targetDir) {
+    public MkdirStep(Configuration configuration,File targetDir) {
+        super(configuration);
         this.targetDir = targetDir;
     }
 
     @Override
     public void perform() {
-        JSyncLogger logger = Configuration.getLogger();
-        if (!Configuration.isAlreadyDone(targetDir)) {
-            if (logger.isDebugEnabled()) {
+        JSyncLogger logger = configuration.getLogger();
+        if (!configuration.isAlreadyDone(targetDir)) {
+            if (configuration.isDebugEnabled()) {
                 logger.info(Thread.currentThread().getName()+" : MKDIR "+targetDir.getAbsolutePath());
             }
             targetDir.mkdir();
-            Configuration.addDirectory(targetDir);
+            configuration.addDirectory(targetDir);
         }
     }
 

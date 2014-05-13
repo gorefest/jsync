@@ -12,6 +12,8 @@ import hudson.tasks.BuildStepDescriptor;
 import jenkins.model.Jenkins;
 import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.Jsync;
+import net.mantucon.jsync.handler.MountPointFileHandler;
+import net.mantucon.jsync.transaction.SynchronizationTransaction;
 import net.mantucon.jsync.util.JSyncLogger;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -19,6 +21,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -67,7 +70,6 @@ public class HelloWorldBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
 
         JSyncLogger logger = new JenkinsLogger(listener);
-        Configuration.setLogger(logger);
 
         try {
             EnvVars vars = build.getEnvironment(listener);
@@ -81,11 +83,12 @@ public class HelloWorldBuilder extends Builder {
             logger.info("Local mirror directory  : "+localMirror);
             logger.info("Remote deploy directory : "+remoteDirectory);
             Jsync jsync = new Jsync();
-            Configuration.init(buildDirectory, localMirror, remoteDirectory);
-            Configuration.setDebugEnabled(getDescriptor().isEnabled());
-            jsync.process();
+            Configuration conf = new Configuration(new File(buildDirectory), new File(localMirror), new File(remoteDirectory), new SynchronizationTransaction(), MountPointFileHandler.class.getName(), true, logger);
+            jsync.process(conf);
         } catch (Exception e) {
+            logger.error("An exception has occured : "+e.getMessage());
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return true;

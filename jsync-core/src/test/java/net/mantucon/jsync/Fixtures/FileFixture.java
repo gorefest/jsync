@@ -1,5 +1,10 @@
 package net.mantucon.jsync.Fixtures;
 
+import net.mantucon.jsync.Configuration;
+import net.mantucon.jsync.handler.MountPointFileHandler;
+import net.mantucon.jsync.transaction.SynchronizationTransaction;
+import net.mantucon.jsync.util.JSyncStandardLogger;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,6 +13,14 @@ import java.io.IOException;
  * Created by marcus on 23.04.14.
  */
 public class FileFixture {
+
+    public static Configuration getTestConfiguration() throws IOException {
+        File buildDir = createTempDirectory("build");
+        File localMirror = createTempDirectory("local");
+        File remoteDir = createTempDirectory("remote");
+        return new Configuration(buildDir,localMirror,remoteDir,new SynchronizationTransaction()
+                , MountPointFileHandler.class.getName(), true, new JSyncStandardLogger());
+    }
 
     public static final void createSmallTestFile(File probeFile) throws IOException {
         String s = "This is a text";

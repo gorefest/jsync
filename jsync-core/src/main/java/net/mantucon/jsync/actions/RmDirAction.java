@@ -1,5 +1,7 @@
 package net.mantucon.jsync.actions;
 
+import net.mantucon.jsync.Configuration;
+import net.mantucon.jsync.actions.steps.BaseStep;
 import net.mantucon.jsync.actions.steps.MkdirStep;
 
 import java.io.File;
@@ -7,13 +9,14 @@ import java.io.File;
 /**
  * Created by marcus on 15.04.14.
  */
-public class RmDirAction implements Action  {
+public class RmDirAction extends BaseStep implements Action  {
 
     private final File file;
 
     Step undoStep;
 
-    public RmDirAction(File file) {
+    public RmDirAction(Configuration configuration,File file) {
+        super(configuration);
         this.file = file;
     }
 
@@ -24,7 +27,7 @@ public class RmDirAction implements Action  {
         } else if (!file.canWrite()) {
             throw new ActionFailedException("Destination directory is write protected");
         }
-        undoStep = new MkdirStep(file);
+        undoStep = new MkdirStep(configuration, file);
         file.delete();
         Thread.yield();
         if (file.exists()) {
@@ -40,5 +43,13 @@ public class RmDirAction implements Action  {
     @Override
     public boolean isProcessed() {
         return undoStep != null;
+    }
+
+    @Override
+    public String toString() {
+        return "RmDirAction{" +
+                "file=" + file +
+                ", undoStep=" + undoStep +
+                '}';
     }
 }

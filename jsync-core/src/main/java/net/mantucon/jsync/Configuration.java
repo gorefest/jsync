@@ -1,96 +1,73 @@
 package net.mantucon.jsync;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.mantucon.jsync.transaction.SynchronizationTransaction;
 import net.mantucon.jsync.util.JSyncLogger;
 import net.mantucon.jsync.util.JSyncStandardLogger;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by marcus on 14.04.14.
  */
 public class Configuration {
 
-    private static ThreadLocal<File> _localBuildDir = new ThreadLocal<>();
-    private static ThreadLocal<File>_localInstallDir= new ThreadLocal<>();
-    private static ThreadLocal<File>_remoteSyncDir= new ThreadLocal<>();
-    private static ThreadLocal<SynchronizationTransaction> synchronizationTransaction= new ThreadLocal<>();
-    private static ThreadLocal<String> _handlerClassName = new ThreadLocal<>();
-    private static ThreadLocal<Boolean> debugEnabled=new ThreadLocal<>();
-    private static ThreadLocal<JSyncLogger> logger =new ThreadLocal<>();
+    private final File localBuildDir;
+    private final File localInstallDir;
+    private final File remoteSyncDir;
+    private final SynchronizationTransaction synchronizationTransaction;
+    private final String handlerClassName;
+    private final Boolean debugEnabled;
+    private final JSyncLogger logger;
 
-    private static final ThreadLocal<Set<String>> alreadyDoneDirectories = new ThreadLocal<>();
+    private final Set<String> alreadyDoneDirectories = Collections.synchronizedSet(new HashSet<String>());
 
-    public static void init() {
-        alreadyDoneDirectories.set(Collections.synchronizedSet(new HashSet<String>()));
+    public Configuration(File localBuildDir, File localInstallDir, File remoteSyncDir, SynchronizationTransaction synchronizationTransaction, String handlerClassName, Boolean debugEnabled, JSyncLogger logger) {
+        this.localBuildDir = localBuildDir;
+        this.localInstallDir = localInstallDir;
+        this.remoteSyncDir = remoteSyncDir;
+        this.synchronizationTransaction = synchronizationTransaction;
+        this.handlerClassName = handlerClassName;
+        this.debugEnabled = debugEnabled;
+        this.logger = logger;
     }
 
-    public static void init(String localBuildDir, String localInstallDir, String remoteSyncDir) {
-        _localBuildDir.set(new File(localBuildDir));
-        _localInstallDir.set(new File(localInstallDir));
-        _remoteSyncDir.set(new File(remoteSyncDir));
-        _handlerClassName.set("net.mantucon.jsync.handler.MountPointFileHandler");
-        init();
+    public final File getLocalBuildDir() {
+        return localBuildDir;
     }
 
-    public static final File getLocalBuildDir() {
-        return _localBuildDir.get();
+    public final File getLocalInstallDir() {
+        return localInstallDir;
     }
 
-    public static final File getLocalInstallDir() {
-        return _localInstallDir.get();
+    public final File getRemoteSyncDir() {
+        return remoteSyncDir;
     }
 
-    public static final File getRemoteSyncDir() {
-        return _remoteSyncDir.get();
+    public final SynchronizationTransaction getSynchronizationTransaction() {
+        return synchronizationTransaction;
     }
 
-    public static final SynchronizationTransaction getSynchronizationTransaction() {
-        return synchronizationTransaction.get();
+    public final String getHandlerClassName() {
+        return handlerClassName;
     }
 
-    public static String getHandlerClassName() {
-        return _handlerClassName.get();
+    public final boolean isDebugEnabled() {
+        return debugEnabled;
     }
 
-    public static boolean isDebugEnabled() {
-        if (debugEnabled.get() == null){
-            debugEnabled.set(Boolean.valueOf(false));
-        }
-        return debugEnabled.get();
+
+    public JSyncLogger getLogger() {
+        return logger;
     }
 
-    public static void setDebugEnabled(boolean value) {
-        debugEnabled.set(value);
+    public void addDirectory(File directory) {
+        alreadyDoneDirectories.add(directory.getAbsolutePath());
     }
 
-    public static JSyncLogger getLogger() {
-        if (logger.get() == null) {
-            logger.set(new JSyncStandardLogger());
-        }
-        return logger.get();
+    public boolean isAlreadyDone(File directory) {
+        return alreadyDoneDirectories.contains(directory.getAbsolutePath());
     }
 
-    public static void addDirectory(File directory) {
-        alreadyDoneDirectories.get().add(directory.getAbsolutePath());
-    }
-
-    public static boolean isAlreadyDone(File directory) {
-        return alreadyDoneDirectories.get().contains(directory.getAbsolutePath());
-    }
-
-    public static void free() {
-        _localBuildDir.set(null);
-        _localInstallDir.set(null);
-        _remoteSyncDir.set(null);
-        _handlerClassName.set(null);
-        alreadyDoneDirectories.get().clear();
-        alreadyDoneDirectories.set(null);
-    }
-    public static void setLogger(JSyncLogger logger1) {
-        logger.set(logger1);
-    }
 }

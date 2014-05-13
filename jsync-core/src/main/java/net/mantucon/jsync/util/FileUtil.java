@@ -18,7 +18,7 @@ public class FileUtil {
      * @param localMirrorFile
      * @return the md5 hash for the file
      */
-    public static final String md5(File localMirrorFile) {
+    public static final String md5( File localMirrorFile) {
         MessageDigest md = null;
         try (FileInputStream fileInputStream = new FileInputStream(localMirrorFile)){
             md = MessageDigest.getInstance("MD5");
@@ -38,10 +38,10 @@ public class FileUtil {
      * @param f - the file on the build output directory
      * @return the local mirror path file
      */
-    public static final File build2local(File f) {
+    public static final File build2local(Configuration configuration, File f) {
         String realPath = f.getAbsolutePath();
-        String localPath = Configuration.getLocalInstallDir().getAbsolutePath();
-        realPath = realPath.replace(Configuration.getLocalBuildDir().getAbsolutePath(), localPath);
+        String localPath = configuration.getLocalInstallDir().getAbsolutePath();
+        realPath = realPath.replace(configuration.getLocalBuildDir().getAbsolutePath(), localPath);
         return new File(realPath);
     }
 
@@ -51,10 +51,10 @@ public class FileUtil {
      * @param f - the file on the build output directory
      * @return the local mirror path file
      */
-    public static final File local2build(File f) {
+    public static final File local2build(Configuration configuration, File f) {
         String realPath = f.getAbsolutePath();
-        String localPath = Configuration.getLocalBuildDir().getAbsolutePath();
-        realPath = realPath.replace(Configuration.getLocalInstallDir().getAbsolutePath(), localPath);
+        String localPath = configuration.getLocalBuildDir().getAbsolutePath();
+        realPath = realPath.replace(configuration.getLocalInstallDir().getAbsolutePath(), localPath);
         return new File(realPath);
     }
 
@@ -65,10 +65,10 @@ public class FileUtil {
      * @param f - the local mirror path file
      * @return the remote file
      */
-    public static final File local2remote(File f) {
+    public static final File local2remote(Configuration configuration, File f) {
         String realPath = f.getAbsolutePath();
-        String remotePath = Configuration.getRemoteSyncDir().getAbsolutePath();
-        realPath = realPath.replace(Configuration.getLocalInstallDir().getAbsolutePath(), remotePath);
+        String remotePath = configuration.getRemoteSyncDir().getAbsolutePath();
+        realPath = realPath.replace(configuration.getLocalInstallDir().getAbsolutePath(), remotePath);
         return new File(realPath);
     }
 

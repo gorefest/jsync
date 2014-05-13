@@ -5,7 +5,6 @@ package net.mantucon.jsync.util;
  */
 public interface JSyncLogger {
 
-    boolean isDebugEnabled();
     void info(String what);
     void warn(String what);
     void error(String what);

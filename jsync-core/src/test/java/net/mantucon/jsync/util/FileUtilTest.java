@@ -2,6 +2,8 @@ package net.mantucon.jsync.util;
 
 import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.Fixtures.FileFixture;
+import net.mantucon.jsync.handler.MountPointFileHandler;
+import net.mantucon.jsync.transaction.SynchronizationTransaction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,12 +25,14 @@ public class FileUtilTest {
     File localPath;
     File remotePath;
 
+    Configuration configuration;
+
     @Before
     public void setUp() throws Exception {
         buildPath = FileFixture.createTempDirectory("build");
         localPath = FileFixture.createTempDirectory("local");
         remotePath = FileFixture.createTempDirectory("remote");
-        Configuration.init(buildPath.getAbsolutePath(), localPath.getAbsolutePath(), remotePath.getAbsolutePath());
+        configuration = new Configuration(buildPath, localPath, remotePath, new SynchronizationTransaction(), MountPointFileHandler.class.getName(), true, new JSyncStandardLogger());
 
     }
 
@@ -38,7 +42,7 @@ public class FileUtilTest {
         File probe = FileFixture.createSmallTestFile(buildPath,"probe");
 
         assertFileExists(probe);
-        File localFile = build2local(probe);
+        File localFile = build2local(configuration, probe);
 
         assertEquals(probe.getName(), localFile.getName());
         assertTrue(localFile.getAbsolutePath().startsWith(localPath.getAbsolutePath()));
@@ -51,7 +55,7 @@ public class FileUtilTest {
         File probe = FileFixture.createSmallTestFile(localPath,"probe");
 
         assertFileExists(probe);
-        File remoteFile = local2remote(probe);
+        File remoteFile = local2remote(configuration, probe);
 
         assertEquals(probe.getName(), remoteFile.getName());
         assertTrue(remoteFile.getAbsolutePath().startsWith(remotePath.getAbsolutePath()));
