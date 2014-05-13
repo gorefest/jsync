@@ -23,6 +23,8 @@ public class Configuration {
 
     private final Set<String> alreadyDoneDirectories = Collections.synchronizedSet(new HashSet<String>());
 
+    private volatile int filesToProcess = 0;
+
     public Configuration(File localBuildDir, File localInstallDir, File remoteSyncDir, SynchronizationTransaction synchronizationTransaction, String handlerClassName, Boolean debugEnabled, JSyncLogger logger) {
         this.localBuildDir = localBuildDir;
         this.localInstallDir = localInstallDir;
@@ -70,4 +72,19 @@ public class Configuration {
         return alreadyDoneDirectories.contains(directory.getAbsolutePath());
     }
 
+    public synchronized void inc() {
+        filesToProcess++;
+    }
+
+    public synchronized void dec() {
+        filesToProcess--;
+    }
+
+    public int getFilesToProcess() {
+        return filesToProcess;
+    }
+
+    public synchronized  void setFilesToProcess(int filesToProcess) {
+        this.filesToProcess = filesToProcess;
+    }
 }

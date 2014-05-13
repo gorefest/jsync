@@ -1,13 +1,12 @@
 package net.mantucon.jsync.actions;
 
 import net.mantucon.jsync.Configuration;
-import net.mantucon.jsync.actions.steps.BaseStep;
 import net.mantucon.jsync.actions.steps.StepChain;
 
 /**
  * Created by marcus on 05.05.14.
  */
-public class CombinedAction extends BaseStep implements Action {
+public class CombinedAction extends ActionStep implements Action {
 
     Action mirrorAction;
     Action remoteAction;
@@ -41,6 +40,7 @@ public class CombinedAction extends BaseStep implements Action {
 
     @Override
     public void perform() {
+        super.process();
         mirrorAction.perform();
         mirrorProcessed = true;
 

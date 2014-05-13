@@ -1,7 +1,7 @@
 package net.mantucon.jsync.actions;
 
+
 import net.mantucon.jsync.Configuration;
-import net.mantucon.jsync.actions.steps.BaseStep;
 import net.mantucon.jsync.actions.steps.StepChain;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by marcus on 15.04.14.
  */
-public class CombinedActionChain extends BaseStep implements Action {
+public class CombinedActionChain extends ActionStep implements Action {
 
     ArrayList<Action> mirrorActions = new ArrayList<>();
     ArrayList<Action> remoteActions = new ArrayList<>();
@@ -23,6 +23,7 @@ public class CombinedActionChain extends BaseStep implements Action {
 
     @Override
     public void perform() {
+        super.process();
         for (Action action : mirrorActions) {
             action.perform();
             processedActions.add(action);

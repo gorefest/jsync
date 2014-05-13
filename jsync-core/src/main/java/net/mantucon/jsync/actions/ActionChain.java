@@ -22,6 +22,7 @@ public class ActionChain extends RecursiveTask<Void> implements Action{
 
     public ActionChain(Configuration configuration) {
         this.configuration = configuration;
+        configuration.inc();
     }
 
     @Override
@@ -58,6 +59,7 @@ public class ActionChain extends RecursiveTask<Void> implements Action{
 
     @Override
     public void perform() {
+        configuration.dec();
         compute();
     }
 

@@ -5,7 +5,7 @@ import net.mantucon.jsync.Configuration;
 /**
  * Created by marcus on 13.05.14.
  */
-public class BaseStep {
+class BaseStep {
 
     protected final Configuration configuration;
 

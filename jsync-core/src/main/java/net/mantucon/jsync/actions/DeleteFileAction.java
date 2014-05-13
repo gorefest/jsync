@@ -3,15 +3,13 @@ package net.mantucon.jsync.actions;
 
 import net.mantucon.jsync.Configuration;
 import net.mantucon.jsync.actions.steps.BackupFileInSituStep;
-import net.mantucon.jsync.actions.steps.BackupFileStep;
-import net.mantucon.jsync.actions.steps.BaseStep;
 
 import java.io.File;
 
 /**
  * Created by marcus on 15.04.14.
  */
-public class DeleteFileAction extends BaseStep implements Action {
+public class DeleteFileAction extends ActionStep implements Action {
 
     private final File targetFile;
 
@@ -25,6 +23,7 @@ public class DeleteFileAction extends BaseStep implements Action {
 
     @Override
     public void perform() {
+        super.process();
         if (targetFile.exists() && targetFile.isDirectory()) {
             throw new ActionFailedException(targetFile + " is a directory!");
         } else if (targetFile.exists() && !targetFile.canWrite()) {

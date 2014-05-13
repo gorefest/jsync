@@ -9,7 +9,7 @@ import java.util.Stack;
 /**
  * Created by marcus on 15.04.14.
  */
-public class CopyFileAction extends BaseStep implements Action{
+public class CopyFileAction extends ActionStep implements Action{
 
     private final File sourceFile;
     private final File destFile;
@@ -25,6 +25,7 @@ public class CopyFileAction extends BaseStep implements Action{
 
     @Override
     public void perform() {
+        super.process();
         // target file exists?
         if (destFile.exists()) {
             undoSteps.add(new DeleteFileStep(configuration, destFile));

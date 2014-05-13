@@ -42,7 +42,7 @@ public class Jsync
 
     }
 
-    public void process(Configuration configuration) {
+    public void process(final Configuration configuration) {
         SynchronizationTransaction tx = new SynchronizationTransaction();
 
         // 1. Find deletion candidates
@@ -51,12 +51,31 @@ public class Jsync
         // 2. Find override candidates
         tx.addAction(crawlerPool.invoke(new CrawlerTask(configuration, configuration.getLocalBuildDir(), CrawlerTask.Mode.BUILD_DIR)));
 
+        final int numberOfSteps = configuration.getFilesToProcess();
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (configuration.getFilesToProcess() > 0) {
+                    try {
+                        Thread.sleep(2000);
+                        configuration.getLogger().info(configuration.getFilesToProcess() + " of " + numberOfSteps + " done");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        thread.start();
 
         try {
             tx.commit(configuration.getLogger());
         } catch (Exception e) {
             tx.rollback();
             e.printStackTrace();
+        } finally {
+            configuration.setFilesToProcess(0);
         }
     }
 }
