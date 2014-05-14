@@ -45,6 +45,16 @@ public class Jsync
     public void process(final Configuration configuration) {
         SynchronizationTransaction tx = new SynchronizationTransaction();
 
+        if (!configuration.getLocalInstallDir().exists()) {
+           configuration.getLogger().info("Local mirror directory does not exist. Going to create "+configuration.getLocalInstallDir().getAbsolutePath());
+           configuration.getLocalInstallDir().mkdirs();
+        }
+
+        if (!configuration.getRemoteSyncDir().exists()) {
+            configuration.getLogger().info("Remote directory does not exist. Going to create "+configuration.getRemoteSyncDir().getAbsolutePath());
+            configuration.getRemoteSyncDir().mkdirs();
+        }
+
         // 1. Find deletion candidates
         tx.addCleanupAction(crawlerPool.invoke(new CrawlerTask(configuration, configuration.getLocalInstallDir(), CrawlerTask.Mode.LOCAL_MIRROR)));
 
@@ -53,20 +63,7 @@ public class Jsync
 
         final int numberOfSteps = configuration.getFilesToProcess();
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (configuration.getFilesToProcess() > 0) {
-                    try {
-                        Thread.sleep(2000);
-                        configuration.getLogger().info(configuration.getFilesToProcess() + " of " + numberOfSteps + " done");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
+        Thread thread = getWatcher(configuration, numberOfSteps);
         thread.start();
 
         try {
@@ -77,5 +74,21 @@ public class Jsync
         } finally {
             configuration.setFilesToProcess(0);
         }
+    }
+
+    private Thread getWatcher(final Configuration configuration, final int numberOfSteps) {
+        return new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (configuration.getFilesToProcess() > 0) {
+                        try {
+                            Thread.sleep(2000);
+                            configuration.getLogger().info(configuration.getFilesToProcess() + " of " + numberOfSteps + " done");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
     }
 }
